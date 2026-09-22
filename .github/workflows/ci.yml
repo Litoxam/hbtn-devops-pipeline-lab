@@ -35,6 +35,7 @@ jobs:
           POSTGRES_USER: pipeline
           POSTGRES_PASSWORD: pipeline
           POSTGRES_DB: pipeline
+          DATABASE_URL: db:5432/pipeline
         ports:
           - 5432:5432
         options: >-
