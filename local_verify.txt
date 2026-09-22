@@ -1,0 +1,45 @@
+lito@Lito:~/Holberton/hbtn-devops-pipeline-lab$ docker compose run --rm app npm run test:unit
+[+]  1/1t 1/11
+ ✔ Container hbtn-devops-pipeline-lab-db-1 Running                                                                                                                                                                       0.0s
+Container hbtn-devops-pipeline-lab-db-1 Waiting
+Container hbtn-devops-pipeline-lab-db-1 Healthy
+Container hbtn-devops-pipeline-lab-app-run-437a99f6f9fe Creating
+Container hbtn-devops-pipeline-lab-app-run-437a99f6f9fe Created
+
+> hbtn-devops-pipeline-lab@1.0.0 test:unit
+> jest --runInBand tests/unit
+
+ PASS  tests/unit/items.unit.test.js
+ PASS  tests/unit/health.test.js
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        0.406 s
+Ran all test suites matching tests/unit.
+
+
+
+lito@Lito:~/Holberton/hbtn-devops-pipeline-lab$ docker compose run --rm app npm run test:integration
+[+]  1/1t 1/11
+ ✔ Container hbtn-devops-pipeline-lab-db-1 Running                                                                                                                                                                       0.0s
+Container hbtn-devops-pipeline-lab-db-1 Waiting
+Container hbtn-devops-pipeline-lab-db-1 Healthy
+Container hbtn-devops-pipeline-lab-app-run-dad84de80c19 Creating
+Container hbtn-devops-pipeline-lab-app-run-dad84de80c19 Created
+
+> hbtn-devops-pipeline-lab@1.0.0 test:integration
+> jest --runInBand tests/integration
+
+ PASS  tests/integration/items.int.test.js
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        0.458 s
+Ran all test suites matching tests/integration.
+
+
+
+lito@Lito:~/Holberton/hbtn-devops-pipeline-lab$ curl -s http://localhost:3000/health
+{"status":"ok"}
