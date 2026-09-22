@@ -52,7 +52,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: NPM download cache
+      - name: npm download cache
         uses: actions/cache@v4
         with:
           path: ~/.npm
@@ -75,5 +75,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          path: reports/
+          path: ./reports/
           retention-days: 7
