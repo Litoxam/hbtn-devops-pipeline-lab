@@ -23,6 +23,11 @@ on:
 permissions:
   contents: read
 
+env:
+  POSTGRES_USER: pipeline
+  POSTGRES_PASSWORD: pipeline
+  POSTGRES_DB: pipeline
+
 jobs:
   test:
     name: Test
@@ -32,9 +37,9 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: pipeline
-          POSTGRES_PASSWORD: pipeline
-          POSTGRES_DB: pipeline
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
         ports:
           - 5432:5432
         options: >-
@@ -68,12 +73,19 @@ jobs:
       - name: Run tests
         env:
           JEST_JUNIT_OUTPUT_DIR: ./reports
-          DATABASE_URL: "postgres://pipeline:pipeline@localhost:5432/pipeline"
+          DATABASE_URL: postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
         run: npm test -- --reporters=default --reporters=jest-junit
 
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          path: ./reports/
+          path: reports/
           retention-days: 7
+
+  build:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
