@@ -44,16 +44,44 @@ jobs:
           --health-retries 5
 
     steps:
-     - name: Check out the repository
-       uses: actions/checkout@v4
+      - name: Check out the repository
+        uses: actions/checkout@v4
 
-     - name: Set up Node.js
-       uses: actions/setup-node@v4
-       with:
-         node-version: '20'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-     - name: Install dependencies
-       run: npm ci
+      - name: NPM download cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run tests
+        env:
+          JEST_JUNIT_OUTPUT_DIR: ./reports
+          DATABASE_URL: "postgres://pipeline:pipeline@localhost:5432/pipeline"
+        run: npm test -- --reporters=default --reporters=jest-junit
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          path: reports/
+          retention-days: 7
+
+
+
+     - name: Run Linter
+       run: npm run lint
 
      - name: Run the unit tests
        run: npm run test:unit
