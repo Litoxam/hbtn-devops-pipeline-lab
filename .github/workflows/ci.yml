@@ -107,20 +107,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-# Docker image names must be lowercase, but GITHUB_REPOSITORY
-# contains 'Litoxam'. The lowercased name is written to GITHUB_ENV
-# so the next steps can read it as env.IMAGE.
-
-    - name: Lowercase image name
-      run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-
-    - name: Build with Dockerfile and push
-      uses: docker/build-push-action@v7
+    - name: Build and push
+      uses: docker/build-push-action@v6
       with:
-          context: .
-          push: true
-          tags: >-
-            ${{ env.IMAGE }}:${{ github.sha }},
-            ${{ env.IMAGE }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+        context: .
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository }}:${{ github.sha }}
+          ghcr.io/${{ github.repository }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
